@@ -29,7 +29,9 @@
       mkRustToolchain = pkgs: pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
     in
     {
-      overlays.default = final: prev: { inherit (self.packages.${prev.system}) eww eww-wayland; };
+      overlays.default = final: prev: {
+        inherit (self.packages.${prev.stdenv.hostPlatform.system}) eww eww-wayland;
+      };
 
       packages = nixpkgs.lib.genAttrs targetSystems (
         system:
@@ -56,7 +58,7 @@
 
             nativeBuildInputs = with pkgs; [
               pkg-config
-              wrapGAppsHook
+              wrapGAppsHook3
             ];
             buildInputs = with pkgs; [
               gtk3
@@ -91,6 +93,6 @@
         }
       );
 
-      formatter = nixpkgs.lib.genAttrs targetSystems (system: (pkgsFor system).nixfmt-rfc-style);
+      formatter = nixpkgs.lib.genAttrs targetSystems (system: (pkgsFor system).nixfmt);
     };
 }
